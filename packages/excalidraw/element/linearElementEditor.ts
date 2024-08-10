@@ -741,7 +741,7 @@ export class LinearElementEditor {
     }
     if (event.altKey && appState.editingLinearElement) {
       if (
-        linearElementEditor.lastUncommittedPoint == null ||
+        linearElementEditor.lastUncommittedPoint == null &&
         !isElbowArrow(element)
       ) {
         mutateElement(element, {
@@ -1446,8 +1446,6 @@ export class LinearElementEditor {
             ? otherUpdates.endBinding
             : null;
       }
-
-      console.warn("movePoints", options?.changedElements);
 
       const mergedElementsMap = options?.changedElements
         ? toBrandedType<SceneElementsMap>(
