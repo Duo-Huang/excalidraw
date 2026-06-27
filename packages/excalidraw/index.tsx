@@ -7,8 +7,10 @@ import React, {
 } from "react";
 
 import {
+  applyDarkModeFilter,
   DEFAULT_IMAGE_OPTIONS,
   DEFAULT_UI_OPTIONS,
+  getStrokeWidthByKey,
   isShallowEqual,
 } from "@excalidraw/common";
 
@@ -66,6 +68,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
   const {
     onExport,
     onChange,
+    onThemeChange,
     onIncrement,
     initialData,
     onExcalidrawAPI,
@@ -128,7 +131,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
 
   if (
     UIOptions.canvasActions.toggleTheme === null &&
-    typeof theme === "undefined"
+    (theme == null || onThemeChange)
   ) {
     UIOptions.canvasActions.toggleTheme = true;
   }
@@ -184,6 +187,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
         <App
           onExport={onExport}
           onChange={onChange}
+          onThemeChange={onThemeChange}
           onIncrement={onIncrement}
           initialData={initialData}
           onExcalidrawAPI={handleExcalidrawAPI}
@@ -397,11 +401,7 @@ export {
   convertToExcalidrawElements,
 } from "@excalidraw/element";
 
-export {
-  elementsOverlappingBBox,
-  isElementInsideBBox,
-  elementPartiallyOverlapsWithOrContainsBBox,
-} from "@excalidraw/utils/withinBounds";
+export { elementsOverlappingBBox } from "@excalidraw/element";
 
 export { DiagramToCodePlugin } from "./components/DiagramToCodePlugin/DiagramToCodePlugin";
 export { getDataURL } from "./data/blob";
@@ -450,3 +450,5 @@ export function useExcalidrawStateValue(
 // -----------------------------------------------------------------------------
 
 export { _useOnAppStateChange as useOnExcalidrawStateChange };
+
+export { applyDarkModeFilter, getStrokeWidthByKey };
