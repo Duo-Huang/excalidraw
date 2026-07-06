@@ -34,8 +34,8 @@ Please add the latest change on the top under the correct section.
   ```
 
   - `target` is required and no longer defaults to the whole scene — pass `target: excalidrawAPI.getSceneElements()` for the old default. Besides element(s) or an element id / element-link URL, it now also accepts `Bounds` and `{ x, y, width?, height? }` rects (missing dimensions default to the viewport size). Deleted and non-scene elements in the target are filtered out with a console warning.
-  - `fitToContent` / `fitToViewport` were replaced by `fit: "scale-down" | "contain"` respectively, defaulting to `"scale-down"` (zoomed so the target fits, at most 100%). For the old default behavior of recentering on the target at the current zoom, pass `fit: "none"`.
-  - `animate` / `duration` were replaced by `animation: boolean | { duration?: number }`. Navigation now animates by default over 250ms (previously it jumped unless `animate: true`, and animated over 500ms) — pass `animation: false` to jump instantly.
+  - `fitToContent` / `fitToViewport` were replaced by `fit: "scale-down" | "contain"` respectively, defaulting to `"scale-down"` (zoomed so the target fits, at most 100%). Previously the default depended on the target: element-id / element-link (string) targets defaulted to fit-to-content — matching the new default — while element(s) or omitted targets defaulted to recentering at the current zoom without changing it; pass `fit: "none"` for that behavior.
+  - `animate` / `duration` were replaced by `animation: boolean | { duration?: number }`. Navigation now always animates by default; previously only string targets did, while element(s) targets jumped unless `animate: true` — pass `animation: false` to jump instantly.
   - `canvasOffsets` was replaced by `offsets`, which also accepts UI-derived offsets (see Features below).
   - `viewportZoomFactor`, `minZoom`, and `maxZoom` are no longer supported.
 
@@ -52,6 +52,27 @@ Please add the latest change on the top under the correct section.
 - The `offsets` option (on `setViewport` and `initialState.viewport`) insets the usable viewport per side so targets aren't fitted underneath overlaid UI. It combines static pixel sides with `ui: true | ViewportOffsetsOptions`, which measures the currently rendered editor UI (toolbar, styles panel, sidebar…) — with configurable padding, per-side overrides, and reserving space for currently-hidden surfaces (`reserve: { stylesPanel?: boolean; sidebar?: boolean }`). The same measurement is exposed through the new `ExcalidrawAPI.getViewportOffsets(opts?)`, and custom UI rendered inside the editor container can opt into being measured via the `data-viewport-ui="top" | "bottom" | "side"` attribute.
 
 ### Breaking changes
+
+- `UIAppState` no longer includes `zoom`, `shouldCacheIgnoreZoom`, and the canvas-interaction transients `snapLines`, `originSnapOffset`, `suggestedBinding`, `frameToHighlight`, and `elementsToHighlight`. These update per pointermove or per animation frame and no longer re-render the editor UI, so UI render props receiving `UIAppState` (`renderCustomStats`, custom `<Footer/>` content, etc.) don't receive them anymore and would render stale values if they read them off the full `AppState`. Subscribe through `useExcalidrawStateValue` instead — the component re-renders only when the selected value changes:
+
+  ```tsx
+  import { useExcalidrawStateValue } from "@excalidraw/excalidraw";
+
+  const ZoomReadout = () => {
+    // `undefined` on initial render, before the editor API initializes
+    const zoomValue = useExcalidrawStateValue(
+      (appState) => appState.zoom.value,
+    );
+
+    if (zoomValue == null) {
+      return null;
+    }
+
+    return <div>{(zoomValue * 100).toFixed(0)}%</div>;
+  };
+  ```
+
+  Outside of React components, you can also subscribe via `ExcalidrawAPI.onStateChange((appState) => appState.zoom.value, (zoomValue) => {...})`, or keep using the existing `onScrollChange(scrollX, scrollY, zoom)` prop.
 
 - Theme changes initiated by the default UI are now delegated to `<Excalidraw onThemeChange={(theme) => ...} />` when supplied. If `onThemeChange` is not supplied, light/dark theme toggling still falls back to updating the internal editor state.
 
