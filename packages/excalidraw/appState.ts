@@ -77,6 +77,7 @@ export const getDefaultAppState = (): Omit<
     isBindingEnabled: true,
     bindingPreference: "enabled",
     isMidpointSnappingEnabled: true,
+    showHints: true,
     inputDevice: "auto",
     defaultSidebarDockedPreference: false,
     isLoading: false,
@@ -141,6 +142,7 @@ export const getDefaultAppState = (): Omit<
       stickyNoteStroke: null,
       stickyNoteBackground: null,
     },
+    fontTopPicks: null,
   };
 };
 
@@ -224,6 +226,7 @@ const APP_STATE_STORAGE_CONF = (<
   boxSelectionMode: { browser: true, export: false, server: false },
   bindingPreference: { browser: true, export: false, server: false },
   isMidpointSnappingEnabled: { browser: true, export: false, server: false },
+  showHints: { browser: true, export: false, server: false },
   inputDevice: { browser: true, export: false, server: false },
   defaultSidebarDockedPreference: {
     browser: true,
@@ -284,6 +287,7 @@ const APP_STATE_STORAGE_CONF = (<
   activeLockedId: { browser: false, export: false, server: false },
   bindMode: { browser: true, export: false, server: false },
   colorTopPicks: { browser: true, export: false, server: false },
+  fontTopPicks: { browser: true, export: false, server: false },
 });
 
 const _clearAppStateForStorage = <

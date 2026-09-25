@@ -367,6 +367,8 @@ export interface AppState {
   bindingPreference: "enabled" | "disabled";
   /** user preference whether arrow snap to midpoints while binding */
   isMidpointSnappingEnabled: boolean;
+  /** user preference whether to show contextual hints above the toolbar */
+  showHints: boolean;
   /**
    * user preference for what the wheel does: with a `trackpad` a plain wheel
    * pans; with a `mouse` a plain wheel zooms. Ctrl/cmd+wheel (how a pinch is
@@ -568,6 +570,9 @@ export interface AppState {
     stickyNoteStroke: readonly string[] | null;
     stickyNoteBackground: readonly string[] | null;
   };
+  /** user-customized font-picker top picks (pinned via drag & drop from the
+   * font picker popup). `null` means no customization (defaults are used) */
+  fontTopPicks: readonly FontFamilyValues[] | null;
 }
 
 export type SearchMatch = {
